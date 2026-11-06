@@ -1,0 +1,9 @@
+# The SlideMage citation format package "chicago" (docs/CITATION_PACKAGE.md in SlideMage).
+id = "chicago"
+name = "Chicago author-date"
+version = "1.0.0"
+requires_slidemage = ">=0.13.0"
+summary = "Author-date citations and a reference list after the Chicago Manual of Style, 17th ed., through biblatex-chicago."
+author = "Stefan Palan"
+homepage = "https://github.com/SlideMage/slidemage-citation-chicago"
+license = "LPPL-1.3c-or-later"

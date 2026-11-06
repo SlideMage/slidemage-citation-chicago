@@ -1,0 +1,56 @@
+﻿% SPDX-FileCopyrightText: 2026 Stefan Palan
+% SPDX-License-Identifier: LPPL-1.3c+
+% SlideMage citation format "chicago": Chicago author-date (The Chicago Manual of Style, 17th edition)
+% citations and reference list, through the biblatex-chicago style (style=chicago-authordate).
+%
+% Choose it in a template (between \input{SlideMage_setup} and \input{SlideMage_base}) or in a deck (before
+% \SMUseBibliography):
+%     \renewcommand{\SMCitationFormat}{chicago}
+%
+\makeatletter
+% Beamer patches biblatex's bibliography so that its first block gets the font and colour "bibliography entry
+% author", the second "title" (bold in the SlideMage theme) and the third and fourth "location" and "note"
+% (grey). Chicago's blocks are not author/title/note, so those looks land on the wrong parts. All four are set to
+% the author's look, so the reference list reads as one paragraph; the italics Chicago wants come from
+% biblatex-chicago itself. All four are body size; a \fullcite in a footnote
+% shrinks them again through SlideMage's footnote template.
+\newcommand{\SM@chiBibLook}[1]{%
+	\setbeamercolor*{bibliography entry #1}{parent=bibliography entry author}%
+	\setbeamerfont{bibliography entry #1}{series=\mdseries, shape=\upshape, size=\normalsize}}
+\newcommand{\SMchiIconRoom}{%
+	\settowidth\beamer@bibiconwidth{\usebeamertemplate*{bibliography item}}%
+	\setlength{\labelwidth}{-\beamer@bibiconwidth}%
+	\addtolength{\labelwidth}{2\labelsep}%
+	\addtolength{\bibhang}{\labelsep}}
+\newcommand{\SMchiBibLooksHook}{%
+	\setbeamerfont{bibliography entry author}{series=\mdseries, shape=\upshape, size=\normalsize}%
+	\SM@chiBibLook{title}\SM@chiBibLook{location}\SM@chiBibLook{note}}
+\makeatother
+\renewcommand{\SMBiblatexOptions}{style=chicago-authordate, backend=biber}
+\renewcommand{\SMBibliographyStyle}{%
+	% biblatex-chicago's own package sets up the style (it loads biblatex with the Chicago options of
+	% its "authordate" choice, which are the options of the already loaded biblatex here), the language files
+	% and the style's lengths. It is run after SlideMage has loaded biblatex, since \SMUseBibliography does that.
+	\RequirePackage[authordate,backend=biber,footmarkoff]{biblatex-chicago}%
+	% (footmarkoff: biblatex-chicago would otherwise replace the footnote layout of the SlideMage template.)
+	\setlength{\bibitemsep}{0.1\baselineskip}%
+	\urlstyle{same}% (the style's \urlstyle{rm} picks Computer Modern; "same" keeps the deck font)
+	% In the author-date style \fullcite is only the short citation; SlideMage's slides use it for the full
+	% reference in a footnote, so it prints the reference-list entry here (the form of \fullcite in the other
+	% biblatex styles).
+	\DeclareCiteCommand{\fullcite}%
+		{\usebibmacro{prenote}}%
+		{\usedriver{}{\thefield{entrytype}}}%
+		{\multicitedelim}%
+		{\usebibmacro{postnote}}%
+	% Beamer fits its item icon into the bibliography list only for authoryear and authortitle (it patches
+	% those two styles' \bibsetup); the same code is applied here, so the icon does not hang over the slide's
+	% edge. The hanging indent is 1.5em plus the icon's room.
+	\setlength{\bibhang}{1.5em}% (Chicago's half inch is a lot on a slide)
+	\pretocmd{\bibsetup}{\SMchiIconRoom}{}{}%
+	\AtBeginDocument{\SMchiBibLooksHook}%
+}
+
+
+
+
